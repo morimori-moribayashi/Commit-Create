@@ -14,7 +14,6 @@ const getInitialContent = () => {
 
 const Home = () => {
     const [content, setContent] = useState(getInitialContent);
-
     // 状態が変化したらローカルストレージに保存（遅延保存の例）
     useEffect(() => {
         const saveToLocalStorage = setTimeout(() => {
@@ -37,6 +36,7 @@ const Home = () => {
     const makeReport = ({ items }) => {
         const done = items
             .filter(({ checked }) => checked)
+            .filter(({ text }) => text!=='')
             .map(({ text }) => `- ${text}`)
             .join('\n');
         const yet = items
@@ -148,7 +148,12 @@ const Home = () => {
                         </button>
                     </div>
                 ))}
-                <button type="button" onClick={() => setContent({ ...content, items: [] })}>
+                <button type="button" onClick={() =>
+                    {
+                        setContent({ ...content, items: [] })
+                        addItem();
+                    }
+                    }>
                     クリア
                 </button>
                 <div>
