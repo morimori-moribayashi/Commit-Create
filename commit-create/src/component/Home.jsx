@@ -165,7 +165,9 @@ const Home = () => {
                         <label>終業報告用コメント</label>
                         <textarea name='comment' rows={2} cols={75} onChange={(e)=>{
                             handleInputChange('comment',e.target.value)
-                        }}></textarea><br></br>
+                        }}
+                        value={content.comment}
+                        ></textarea><br></br>
                 <button type="button" onClick={() =>
                     {
                         setContent({ ...content, items: [] ,comment:''})
