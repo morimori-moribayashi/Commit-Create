@@ -8,7 +8,8 @@ const getInitialContent = () => {
         : {
               job: '',
               name: '',
-              items: [],
+              items: [{ checked: false, text: '', dropdownValue: 0 }],
+              comment: '',
           };
 };
 
@@ -27,27 +28,28 @@ const Home = () => {
     const makeMorning = ({ job, name, items }) => {
         const commitList = items
             .filter(({ text }) => text.trim() !== '')
-            .map(({ text }) => `- ${text}`)
+            .map(({ text }) => `- ${text.replace(/\n/g,`\n　　`)}`)
             .join('\n');
         return `おはようございます。${job}の${name}です。\n本日は\n${commitList}\nにコミットします。よろしくお願いいたします。`;
     };
 
     // 終業報告のメッセージ生成
-    const makeReport = ({ items }) => {
+    const makeReport = ({ items ,comment}) => {
         const done = items
             .filter(({ checked }) => checked)
-            .filter(({ text }) => text!=='')
+            .filter(({ text }) => text.trim() !=='')
             .map(({ text }) => `- ${text}`)
             .join('\n');
         const yet = items
             .filter(({ checked }) => !checked)
             .map(({ text, dropdownValue }) =>
                 text.trim() !== ''
-                    ? `- ${text} (達成率：${dropdownValue} %)`
+                    ? `- ${text.replace(/\n/g,`\n　　`)} \n  (達成率：${dropdownValue} %)`
                     : ''
             )
-            .join('\n');
-        return `お疲れ様です。本日の終業報告をいたします。\n本日のコミットメントは以下のとおりです。\n\n[達成]\n${done}\n\n[未達]\n${yet}\n\n以上です。よろしくお願いいたします。`;
+            .join('');
+        if(!comment=='') comment+=`\n`;
+        return `お疲れ様です。本日の終業報告をいたします。\n本日のコミットメントは以下のとおりです。\n\n[達成]\n${done}\n\n[未達]\n${yet}\n\n${comment}以上です。よろしくお願いいたします。`;
     };
 
     // 入力変更の処理
@@ -88,6 +90,9 @@ const Home = () => {
 
     function handleTextAreaEnter(e){
         if(e.keyCode===13 && !e.shiftKey ){
+            e.preventDefault();
+        }
+        if(e.keyCode===13 && (e.ctrlKey || e.metaKey)){
             e.preventDefault();
             addItem();
         }
@@ -156,14 +161,20 @@ const Home = () => {
                         </button>
                     </div>
                 ))}
+                    <br></br>
+                        <label>終業報告用コメント</label>
+                        <textarea name='comment' rows={2} cols={75} onChange={(e)=>{
+                            handleInputChange('comment',e.target.value)
+                        }}></textarea><br></br>
                 <button type="button" onClick={() =>
                     {
-                        setContent({ ...content, items: [] })
+                        setContent({ ...content, items: [] ,comment:''})
                         addItem();
                     }
                     }>
                     クリア
                 </button>
+                <hr></hr>
                 <div>
                     <label>朝会</label>
                     <button type="button" onClick={() => copyToClipboard(makeMorning(content))}>
