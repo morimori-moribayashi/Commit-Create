@@ -84,8 +84,14 @@ const Home = () => {
     // クリップボードにコピー
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
-        alert('コピーしました!');
     };
+
+    function handleTextAreaEnter(e){
+        if(e.keyCode===13 && !e.shiftKey ){
+            e.preventDefault();
+            addItem();
+        }
+    }
 
     return (
         <div>
@@ -129,6 +135,8 @@ const Home = () => {
                             onChange={(e) =>
                                 handleItemChange(index, 'text', e.target.value)
                             }
+                            onKeyDown={(e)=> handleTextAreaEnter(e)}
+                            rows={2} cols={75}
                         />
                         <select
                             value={item.dropdownValue}
@@ -161,14 +169,14 @@ const Home = () => {
                     <button type="button" onClick={() => copyToClipboard(makeMorning(content))}>
                         コピー
                     </button>
-                    <textarea readOnly value={makeMorning(content)} />
+                    <textarea readOnly value={makeMorning(content)} rows={10} cols={100}  />
                 </div>
                 <div>
                     <label>終業報告</label>
                     <button type="button" onClick={() => copyToClipboard(makeReport(content))}>
                         コピー
                     </button>
-                    <textarea readOnly value={makeReport(content)} />
+                    <textarea readOnly value={makeReport(content)} rows={10} cols={100}  />
                 </div>
             </form>
         </div>
