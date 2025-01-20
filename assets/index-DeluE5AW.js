@@ -45,7 +45,8 @@ ${pe}
 にコミットします。よろしくお願いいたします。`},we=({items:z,comment:D})=>{const O=z.filter(({checked:K})=>K).filter(({text:K})=>K.trim()!=="").map(({text:K})=>`- ${K}`).join(`
 `),pe=z.filter(({checked:K})=>!K).map(({text:K,dropdownValue:J})=>K.trim()!==""?`- ${K.replace(/\n/g,`
 　　`)} 
-  (達成率：${J} %)`:"").join("");return!D==""&&(D+=`
+  (達成率：${J} %)
+`:"").join("");return!D==""&&(D+=`
 `),`お疲れ様です。本日の終業報告をいたします。
 本日のコミットメントは以下のとおりです。
 
