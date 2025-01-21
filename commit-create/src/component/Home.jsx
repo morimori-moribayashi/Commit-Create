@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React, { useState, useEffect } from 'react';
 
 // 初期値を取得する関数
@@ -44,7 +45,7 @@ const Home = () => {
             .filter(({ checked }) => !checked)
             .map(({ text, dropdownValue }) =>
                 text.trim() !== ''
-                    ? `- ${text.replace(/\n/g,`\n　　`)} \n  (達成率：${dropdownValue} %)`
+                    ? `- ${text.replace(/\n/g,`\n　　`)} \n  (達成率：${dropdownValue} %)\n`
                     : ''
             )
             .join('');
@@ -99,97 +100,152 @@ const Home = () => {
     }
 
     return (
-        <div>
-            <h1>朝会・終業報告自動作成</h1>
-            <form>
-                <div>
+        <div className={clsx(
+            'w-full flex-col justify-center space-y-2 mx-0',
+            'md:w-3/5 md:min-w-[768px] md:m-auto md:max-w-[1024px]'
+        )}>
+            <h1 className={clsx(
+                'text-xl text-cente font-bold'
+            )}>朝会・終業報告自動作成</h1>
+            <form className={'w-full space-y-2'}>
+                <div 
+                className={'mx-0 flex justify-start bg-blue-50 py-2'}
+                >
                     <label>職種</label>
                     <input
                         type="text"
                         name="jobType"
                         value={content.job}
                         onChange={(e) => handleInputChange('job', e.target.value)}
+                        placeholder='例：エンジニア'
+                        className={'border-2 rounded-md mx-1 px-1'}
                     />
                 </div>
-                <div>
+                <div
+                        className={'mx-0 flex justify-start bg-blue-50 py-2'}
+                >
                     <label>名前</label>
                     <input
                         type="text"
                         name="name"
                         value={content.name}
                         onChange={(e) => handleInputChange('name', e.target.value)}
+                        placeholder='例：山田'
+                        className={'border-2 rounded-md mx-1 px-1'}
                     />
                 </div>
-                <div>
+                <hr/>
+                <div className={'flex justify-start space-x-3 items-center'}>
                     <label>コミット</label>
-                    <button type="button" onClick={addItem}>
+                    <button type="button" onClick={addItem}
+                    className={'bg-orange-500 text-white px-3 py-1 rounded-xl text-xs transform scale-90'}
+                    >
                         追加
                     </button>
                 </div>
                 {content.items.map((item, index) => (
-                    <div key={index}>
-                        <input
-                            type="checkbox"
-                            checked={item.checked}
-                            onChange={() =>
-                                handleItemChange(index, 'checked', !item.checked)
-                            }
-                        />
-                        <textarea
-                            value={item.text}
-                            onChange={(e) =>
-                                handleItemChange(index, 'text', e.target.value)
-                            }
-                            onKeyDown={(e)=> handleTextAreaEnter(e)}
-                            rows={2} cols={75}
-                        />
-                        <select
-                            value={item.dropdownValue}
-                            onChange={(e) =>
-                                handleItemChange(index, 'dropdownValue', parseInt(e.target.value, 10))
-                            }
-                        >
-                            <option value={0}>達成率を選択</option>
-                            {[...Array(10).keys()].map((i) => (
-                                <option key={i} value={i * 10}>
-                                    {i * 10} %
-                                </option>
-                            ))}
-                        </select>
-                        <button type="button" onClick={() => removeItem(index)}>
+                    <div key={index} className={'flex-col content-start bg-orange-50 p-2 rounded'}>
+                        <div className={'flex-col justify-start'}>
+                            <input
+                                type="checkbox"
+                                checked={item.checked}
+                                onChange={() =>
+                                    handleItemChange(index, 'checked', !item.checked)
+                                }
+                                className={clsx(
+                                    'z-10 w-5 h-5 rounded border-gray-400 block ml-2 translate-y-7 -mt-5',
+                                )}
+                            />
+                            <textarea
+                                value={item.text}
+                                onChange={(e) =>
+                                    handleItemChange(index, 'text', e.target.value)
+                                }
+                                onKeyDown={(e)=> handleTextAreaEnter(e)}
+                                className={'z-0 w-full pl-8 py-1 border-2 rounded h-fit resize-none '}
+                            />
+                        </div>
+                        <div className={'flex justify-between my-1'}>
+                           {!item.checked?
+                            <select
+                                value={item.dropdownValue}
+                                onChange={(e) =>
+                                    handleItemChange(index, 'dropdownValue', parseInt(e.target.value, 10))
+                                }
+                            >
+                                <option value={0}>達成率</option>
+                                {[...Array(10).keys()].map((i) => (
+                                    <option key={i} value={i * 10}>
+                                        {i * 10} %
+                                    </option>
+                                ))}
+                            </select>
+                           :
+                                <div>100%</div>
+                           }
+                           
+                        <button type="button" onClick={() => removeItem(index)}
+                            className={'text-orange-600 active:text-red-600 active:underline underline-offset-2 p-auto mr-1'}
+                            >
                             削除
                         </button>
+                        </div>
                     </div>
                 ))}
-                    <br></br>
-                        <label>終業報告用コメント</label>
-                        <textarea name='comment' rows={2} cols={75} onChange={(e)=>{
-                            handleInputChange('comment',e.target.value)
-                        }}
-                        value={content.comment}
-                        ></textarea><br></br>
-                <button type="button" onClick={() =>
-                    {
-                        setContent({ ...content, items: [] ,comment:''})
-                        addItem();
-                    }
-                    }>
-                    クリア
-                </button>
+                        <div className={'bg-orange-50 px-3 py-2'}>
+                            <div className={'flex'}><label>終業報告用コメント</label></div>
+                            <textarea name='comment'  onChange={(e)=>{
+                                handleInputChange('comment',e.target.value)
+                            }}
+                            value={content.comment}
+                            placeholder='なにかコメントがあれば入力'
+                            className={'w-full min-h-12 border-2 resize-none p-1'}
+                            ></textarea>
+                        </div>
+                <div>
+                    <button type="button" onClick={() =>
+                        {
+                            setContent({ ...content, items: [] ,comment:''})
+                            addItem();
+                        }
+                        }
+                        className={'border-blue-400 border-2 px-5 py-1 text-blue-400 rounded-2xl my-5 transform scale-75'}
+                        >
+                        クリア
+                    </button>
+                </div>
                 <hr></hr>
                 <div>
-                    <label>朝会</label>
-                    <button type="button" onClick={() => copyToClipboard(makeMorning(content))}>
-                        コピー
-                    </button>
-                    <textarea readOnly value={makeMorning(content)} rows={10} cols={100}  />
+                    <div className={'flex justify-between my-3'}>
+                        <label>朝会</label>
+                        <button type="button" onClick={() => copyToClipboard(makeMorning(content))}
+                        className={clsx(
+                            'bg-orange-500 text-white border-orange-500 px-3 py-1 rounded-xl text-xs transform scale-90',
+                            'active:transform active:scale-75 duration-500 border-2',
+                        )}
+                            >
+                            コピー
+                        </button>
+                    </div>
+                    <textarea readOnly value={makeMorning(content)}  
+                    className={'border-2 border-black text-xs w-full  max-h-56 p-1'}
+                    />
                 </div>
                 <div>
-                    <label>終業報告</label>
-                    <button type="button" onClick={() => copyToClipboard(makeReport(content))}>
-                        コピー
-                    </button>
-                    <textarea readOnly value={makeReport(content)} rows={10} cols={100}  />
+                    <div className={'flex justify-between my-3'}>
+                        <label>終業報告</label>
+                        <button type="button" onClick={() => copyToClipboard(makeReport(content))}
+                        className={clsx(
+                            'bg-orange-500 text-white border-orange-500 px-3 py-1 rounded-xl text-xs transform scale-90',
+                            'active:transform active:scale-75 duration-500 border-2',
+                        )}
+                        >
+                            コピー
+                        </button>
+                    </div>
+                    <textarea readOnly value={makeReport(content)} 
+                    className={'border-2 border-black text-xs w-full  max-h-56 p-1'}
+                    />
                 </div>
             </form>
         </div>
