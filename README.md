@@ -29,7 +29,7 @@ https://morimori-moribayashi.github.io/Commit-Create/
    - ブラウザ上で直接利用可能（インストール不要）
 
 2. 基本的な操作フロー
-   - 詳細な操作手順は[Wiki](Wikiリンク)を参照してください
+   - 詳細な操作手順は[Wiki](https://github.com/morimori-moribayashi/Commit-Create/wiki)を参照してください
 
 ## 技術スタック
 
