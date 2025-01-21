@@ -100,4 +100,4 @@ GitHub: [@morimori-moribayashi](https://github.com/morimori-moribayashi/)
 
 ---
 
-詳細な使用方法やトラブルシューティングについては、[Wiki](Wikiリンク)をご参照ください。
+詳細な使用方法やトラブルシューティングについては、[Wiki](https://github.com/morimori-moribayashi/Commit-Create/wiki)をご参照ください。
