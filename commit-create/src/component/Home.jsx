@@ -45,12 +45,12 @@ const Home = () => {
             .filter(({ checked }) => !checked)
             .map(({ text, dropdownValue }) =>
                 text.trim() !== ''
-                    ? `- ${text.replace(/\n/g,`\n　　`)} \n  (達成率：${dropdownValue} %)\n`
+                    ? `\n- ${text.replace(/\n/g,`\n　　`)} \n  (達成率：${dropdownValue} %)`
                     : ''
             )
             .join('');
         if(!comment=='') comment+=`\n`;
-        return `お疲れ様です。本日の終業報告をいたします。\n本日のコミットメントは以下のとおりです。\n\n[達成]\n${done}\n\n[未達]\n${yet}\n\n${comment}以上です。よろしくお願いいたします。`;
+        return `お疲れ様です。本日の終業報告をいたします。\n本日のコミットメントは以下のとおりです。\n\n[達成]${done}\n\n[未達]${yet}\n\n${comment}以上です。よろしくお願いいたします。`;
     };
 
     // 入力変更の処理
