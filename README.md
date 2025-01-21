@@ -2,7 +2,7 @@
 
 朝会と終業報告のコミットを効率的に一括入力・管理できるWebアプリケーションです。
 
-[デプロイ済みURL]
+https://morimori-moribayashi.github.io/Commit-Create/
 
 ## 概要
 
