@@ -45,12 +45,12 @@ const Home = () => {
             .filter(({ checked }) => !checked)
             .map(({ text, dropdownValue }) =>
                 text.trim() !== ''
-                    ? `\n- ${text.replace(/\n/g,`\n　　`)} \n  (達成率：${dropdownValue} %)`
+                    ? `\n- ${text.replace(/\n/g,`\n　　`)} \n  (達成率：${Math.floor(dropdownValue)} %)`
                     : ''
             )
             .join('');
         if(!comment=='') comment+=`\n`;
-        return `お疲れ様です。本日の終業報告をいたします。\n本日のコミットメントは以下のとおりです。\n\n[達成]${done}\n\n[未達]${yet}\n\n${comment}以上です。よろしくお願いいたします。`;
+        return `お疲れ様です。本日の終業報告をいたします。\n本日のコミットメントは以下のとおりです。\n\n[達成]\n${done}\n\n[未達]${yet}\n\n${comment}以上です。よろしくお願いいたします。`;
     };
 
     // 入力変更の処理
@@ -71,7 +71,7 @@ const Home = () => {
     const addItem = () => {
         setContent((prev) => ({
             ...prev,
-            items: [...prev.items, { checked: false, text: '', dropdownValue: 0 }],
+            items: [...prev.items, { checked: false, text: '', dropdownValue: 0.1 }],
         }));
     };
 
@@ -101,11 +101,11 @@ const Home = () => {
 
     return (
         <div className={clsx(
-            'w-full flex-col justify-center space-y-2 mx-0',
-            'md:w-3/5 md:min-w-[768px] md:m-auto md:max-w-[1024px]'
+            'w-full flex-col justify-center mx-0 -my-8',
+            'md:w-3/5 md:min-w-[768px] md:mx-auto md:max-w-[1024px]'
         )}>
             <h1 className={clsx(
-                'text-xl text-cente font-bold'
+                'text-xl text-cente font-bold my-8'
             )}>朝会・終業報告自動作成</h1>
             <form className={'w-full space-y-2'}>
                 <div 
@@ -169,11 +169,12 @@ const Home = () => {
                            {!item.checked?
                             <select
                                 value={item.dropdownValue}
-                                onChange={(e) =>
-                                    handleItemChange(index, 'dropdownValue', parseInt(e.target.value, 10))
+                                onChange={(e) =>{
+                                    handleItemChange(index, 'dropdownValue',parseFloat(e.target.value))
+                                }
                                 }
                             >
-                                <option value={0}>達成率</option>
+                                <option value={0.1}>達成率</option>
                                 {[...Array(10).keys()].map((i) => (
                                     <option key={i} value={i * 10}>
                                         {i * 10} %
@@ -248,6 +249,7 @@ const Home = () => {
                     />
                 </div>
             </form>
+            <div className={'my-7'}><a href='https://github.com/morimori-moribayashi/Commit-Create'>GitHub</a> / <a href='https://github.com/morimori-moribayashi/Commit-Create/wiki'>使い方</a></div>
         </div>
     );
 };
