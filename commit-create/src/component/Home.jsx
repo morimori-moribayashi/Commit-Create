@@ -36,12 +36,14 @@ const Home = () => {
 
     // 終業報告のメッセージ生成
     const makeReport = ({ items ,comment}) => {
-        const done = items
+        let done = items
             .filter(({ checked }) => checked)
             .filter(({ text }) => text.trim() !=='')
             .map(({ text }) => `- ${text}`)
             .join('\n');
-        const yet = items
+        
+        if(done==='')done='なし';
+        let yet = items
             .filter(({ checked }) => !checked)
             .map(({ text, dropdownValue }) =>
                 text.trim() !== ''
@@ -49,6 +51,7 @@ const Home = () => {
                     : ''
             )
             .join('');
+        if(yet=='')yet='\nなし';
         if(!comment=='') comment+=`\n`;
         return `お疲れ様です。本日の終業報告をいたします。\n本日のコミットメントは以下のとおりです。\n\n[達成]\n${done}\n\n[未達]${yet}\n\n${comment}以上です。よろしくお願いいたします。`;
     };
@@ -88,6 +91,37 @@ const Home = () => {
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
     };
+    const copyBtn_default = {copied:false,label:'コピー'};
+    const [copyBtn,setCopyBtn] = useState([{...copyBtn_default,type:'morning'},{...copyBtn_default,type:'report'}]);
+    //コピーボタンを押したときの処理
+    function handleCopyButton(index){
+        if(copyBtn[index].copied)return;
+        if(index==0)copyToClipboard(makeMorning(content));
+        if(index==1)copyToClipboard(makeReport(content));
+        setCopyBtn((prev)=>{
+            return prev.map((obj,i)=>{
+                if(i===index){
+                    return {
+                        ...obj,
+                        copied:true,
+                        label:'コピーしました！！',
+                    };
+                }
+                return obj;
+            })
+        })
+    }  
+    useEffect(() => {
+        if (copyBtn.every((obj) => obj.copied === false)) {
+            return;
+        }
+    
+        const timer = setTimeout(() => {
+            setCopyBtn(copyBtn.map((obj) => ({ ...obj, copied: false, label: 'コピー' })));
+        }, 2000);
+    
+        return () => clearTimeout(timer);
+    }, [copyBtn]);
 
     function handleTextAreaEnter(e){
         if(e.keyCode===13 && !e.shiftKey ){
@@ -219,13 +253,14 @@ const Home = () => {
                 <div>
                     <div className={'flex justify-between my-3'}>
                         <label>朝会</label>
-                        <button type="button" onClick={() => copyToClipboard(makeMorning(content))}
+                        <button type="button" onClick={() => handleCopyButton(0)}                        
                         className={clsx(
-                            'bg-orange-500 text-white border-orange-500 px-3 py-1 rounded-xl text-xs transform scale-90',
+                            'border-orange-500 px-3 py-1 rounded-xl text-xs transform scale-90',
                             'active:transform active:scale-75 duration-500 border-2',
+                            !copyBtn[0].copied?'bg-orange-500 text-white':'bg-white text-orange-500',
                         )}
                             >
-                            コピー
+                            {copyBtn[0].label}
                         </button>
                     </div>
                     <textarea readOnly value={makeMorning(content)}  
@@ -235,14 +270,16 @@ const Home = () => {
                 <div>
                     <div className={'flex justify-between my-3'}>
                         <label>終業報告</label>
-                        <button type="button" onClick={() => copyToClipboard(makeReport(content))}
+                        <button type="button" onClick={() => handleCopyButton(1)}                        
                         className={clsx(
-                            'bg-orange-500 text-white border-orange-500 px-3 py-1 rounded-xl text-xs transform scale-90',
+                            'border-orange-500 px-3 py-1 rounded-xl text-xs transform scale-90',
                             'active:transform active:scale-75 duration-500 border-2',
+                            !copyBtn[1].copied?'bg-orange-500 text-white':'bg-white text-orange-500',
                         )}
-                        >
-                            コピー
+                            >
+                            {copyBtn[1].label}
                         </button>
+
                     </div>
                     <textarea readOnly value={makeReport(content)} 
                     className={'border-2 border-black text-xs w-full  max-h-56 p-1'}
